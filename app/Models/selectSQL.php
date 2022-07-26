@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\DB;
+
 class SelectSql
 {
   // wbs一覧取得
@@ -21,13 +23,14 @@ class SelectSql
             a.rep
         FROM wbs a
     ';
-    return $sql;
+    $res = DB::select($sql);
+    return $res;
   }
 
   // wbs詳細取得
-  public function selectDetailWbsData($id)
+  public function selectDetailWbsData($req)
   {
-    $sql = <<<EOT
+    $sql = '
     SELECT 
         a.id,
         a.mainItem,
@@ -40,10 +43,12 @@ class SelectSql
         a.productionCost,
         a.rep
     FROM wbs a
-    WHERE a.id = {$id}
-    EOT;
+    WHERE a.rep = ?
+    ';
+    $res = DB::select($sql, [$req]);
+    return $res;
   }
-
+  // コメント一覧取得
   public function selectWbsComment($id)
   {
     $sql = <<<EOT
@@ -53,5 +58,28 @@ class SelectSql
     WHERE wbsId = {$id}
     EOT;
     return $sql;
+  }
+
+  // WBS更新
+  public function updateWbsData($req, $id)
+  {
+    $sql = '
+    UPDATE wbs
+    SET 
+      mainItem = ?,
+      subItem = ?,
+      plansStartDay=CONVERT(?,DATETIME),
+      plansFinishDay=CONVERT(?,DATETIME),
+      resultStartDay=CONVERT(?,DATETIME),
+      resultsFinishDay=CONVERT(?,DATETIME),
+      progress=?,
+      productionCost=?,
+      rep-?
+    WHERE id = ?
+    ';
+    DB::update($sql, [
+      $req->mainItem, $req->subItem, $req->plansStartDay, $req->plansFinishDay, $req->resultStartDay, $req->resultsFinishDay,
+      $req->progress, $req->productionCost, $req->rep, $id
+    ]);
   }
 }

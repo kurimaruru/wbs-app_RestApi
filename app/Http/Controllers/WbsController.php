@@ -18,7 +18,7 @@ class WbsController extends Controller
     {
         try {
             $select = new SelectSql;
-            $resWbs = DB::select($select->selectWbsData());
+            $resWbs = $select->selectWbsData();
 
             // ddしてるとReact側にResponceが渡せないので注意
             // dd($resWbs);
@@ -48,10 +48,18 @@ class WbsController extends Controller
      * @param  string user
      * @return \Illuminate\Http\Response
      */
-    public function show($user)
+    public function show(Request $request)
     {
-        $select = new SelectSql;
-        $resDetailWbs = DB::select($select->selectDetailWbsData($user));
+        try {
+            $select = new SelectSql;
+            $resDetailWbs = $select->selectDetailWbsData($request->user);
+            return response()->json(
+                $resDetailWbs,
+                200
+            );
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     /**
@@ -61,9 +69,32 @@ class WbsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $req, $id)
     {
-        //
+        try {
+            $update = [
+                'mainItem' => $req->mainItem,
+                'subItem' => $req->subItem,
+                'plansStartDay' => Date($req->plansStartDay),
+                'plansFinishDay' => Date($req->plansFinishDay),
+                'resultStartDay' => Date($req->resultStartDay),
+                'resultsFinishDay' => Date($req->resultsFinishDay),
+                'progress' => $req->progress,
+                'productionCost' => $req->productionCost,
+                'rep' => $req->rep
+            ];
+            // Wbs::where('id', $id)->update($update);
+            return response()->json(
+                $req,
+                200
+            );
+        } catch (\Throwable $th) {
+            throw $th;
+            return response()->json(
+                $th,
+                500
+            );
+        }
     }
 
     /**
