@@ -53,7 +53,7 @@ class CommentController extends Controller
     public function show($id)
     {
         try {
-            $select = new SelectSql;
+            $select = new SelectSql();
             $resComment = $select->selectWbsComment($id);
             return response()->json(
                 $resComment,

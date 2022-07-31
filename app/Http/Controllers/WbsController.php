@@ -16,7 +16,7 @@ class WbsController extends Controller
     public function index()
     {
         try {
-            $select = new SelectSql;
+            $select = new SelectSql();
             $resWbs = $select->selectWbsData();
 
             // ddしてるとReact側にResponceが渡せないので注意
@@ -69,7 +69,7 @@ class WbsController extends Controller
     public function show(Request $request)
     {
         try {
-            $select = new SelectSql;
+            $select = new SelectSql();
             $resDetailWbs = $select->selectDetailWbsData($request->user);
             return response()->json(
                 $resDetailWbs,
