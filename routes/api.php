@@ -3,6 +3,7 @@
 use App\Http\Controllers\WbsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CommentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,3 +22,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // wbs操作に関するルーティング
 Route::apiResource('/wbs', WbsController::class);
 Route::get('/wbsDetail', [WbsController::class, 'show']);
+Route::apiResource('/comment', CommentController::class);
+Route::apiResource('/calendar', CalendarController::class);

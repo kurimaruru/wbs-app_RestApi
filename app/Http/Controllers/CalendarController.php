@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Wbs;
 use Illuminate\Http\Request;
+use App\Models\Wbs;
 use App\Models\SelectSql;
 
-class WbsController extends Controller
+class CalendarController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,19 +15,7 @@ class WbsController extends Controller
      */
     public function index()
     {
-        try {
-            $select = new SelectSql;
-            $resWbs = $select->selectWbsData();
-
-            // ddしてるとReact側にResponceが渡せないので注意
-            // dd($resWbs);
-            return response()->json(
-                $resWbs,
-                200
-            );
-        } catch (\Throwable $th) {
-            return $th;
-        }
+        //
     }
 
     /**
@@ -36,48 +24,20 @@ class WbsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $req)
+    public function store(Request $request)
     {
-        try {
-            $create = [
-                'mainItem' => $req->mainItem,
-                'subItem' => $req->subItem,
-                'plansStartDay' => $req->plansStartDay,
-                'plansFinishDay' => $req->plansFinishDay,
-                'resultStartDay' => null,
-                'resultsFinishDay' => null,
-                'progress' => '',
-                'productionCost' => $req->productionCost,
-                'rep' => $req->rep
-            ];
-            $wbs = Wbs::create($create);
-            return response()->json(
-                $wbs,
-                201
-            );
-        } catch (\Throwable $th) {
-            return $th;
-        }
+        //
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  string user
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request)
+    public function show($id)
     {
-        try {
-            $select = new SelectSql;
-            $resDetailWbs = $select->selectDetailWbsData($request->user);
-            return response()->json(
-                $resDetailWbs,
-                200
-            );
-        } catch (\Throwable $th) {
-            throw $th;
-        }
+        //
     }
 
     /**

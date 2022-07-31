@@ -51,35 +51,16 @@ class SelectSql
   // コメント一覧取得
   public function selectWbsComment($id)
   {
-    $sql = <<<EOT
-    SELECT 
-      wbsId,user,comment,created_at 
-    FROM wbs_comment
-    WHERE wbsId = {$id}
-    EOT;
-    return $sql;
-  }
-
-  // WBS更新
-  public function updateWbsData($req, $id)
-  {
     $sql = '
-    UPDATE wbs
-    SET 
-      mainItem = ?,
-      subItem = ?,
-      plansStartDay=CONVERT(?,DATETIME),
-      plansFinishDay=CONVERT(?,DATETIME),
-      resultStartDay=CONVERT(?,DATETIME),
-      resultsFinishDay=CONVERT(?,DATETIME),
-      progress=?,
-      productionCost=?,
-      rep-?
-    WHERE id = ?
+    SELECT 
+      wbsId,
+      user,
+      comment,
+      DATE_FORMAT(created_at ,\'%Y-%m-%d\') as createdTime,
+      confirmFlag
+    FROM wbs_comment
     ';
-    DB::update($sql, [
-      $req->mainItem, $req->subItem, $req->plansStartDay, $req->plansFinishDay, $req->resultStartDay, $req->resultsFinishDay,
-      $req->progress, $req->productionCost, $req->rep, $id
-    ]);
+    $res = DB::select($sql);
+    return $res;
   }
 }

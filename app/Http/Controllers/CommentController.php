@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Wbs;
 use Illuminate\Http\Request;
+use App\Models\Wbs;
+use App\Models\WbsComment;
 use App\Models\SelectSql;
 
-class WbsController extends Controller
+
+class CommentController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,19 +17,6 @@ class WbsController extends Controller
      */
     public function index()
     {
-        try {
-            $select = new SelectSql;
-            $resWbs = $select->selectWbsData();
-
-            // ddしてるとReact側にResponceが渡せないので注意
-            // dd($resWbs);
-            return response()->json(
-                $resWbs,
-                200
-            );
-        } catch (\Throwable $th) {
-            return $th;
-        }
     }
 
     /**
@@ -40,20 +29,15 @@ class WbsController extends Controller
     {
         try {
             $create = [
-                'mainItem' => $req->mainItem,
-                'subItem' => $req->subItem,
-                'plansStartDay' => $req->plansStartDay,
-                'plansFinishDay' => $req->plansFinishDay,
-                'resultStartDay' => null,
-                'resultsFinishDay' => null,
-                'progress' => '',
-                'productionCost' => $req->productionCost,
-                'rep' => $req->rep
+                'wbsId' => $req->wbsId,
+                'user' => $req->user,
+                'comment' => $req->comment,
+                'confirmFlag' => $req->confirmFlag
             ];
-            $wbs = Wbs::create($create);
+            $comment = WbsComment::create($create);
             return response()->json(
-                $wbs,
-                201
+                $comment,
+                200
             );
         } catch (\Throwable $th) {
             return $th;
@@ -63,20 +47,20 @@ class WbsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  string user
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request)
+    public function show($id)
     {
         try {
             $select = new SelectSql;
-            $resDetailWbs = $select->selectDetailWbsData($request->user);
+            $resComment = $select->selectWbsComment($id);
             return response()->json(
-                $resDetailWbs,
+                $resComment,
                 200
             );
         } catch (\Throwable $th) {
-            throw $th;
+            return $th;
         }
     }
 
@@ -91,18 +75,11 @@ class WbsController extends Controller
     {
         try {
             $update = [
-                'mainItem' => $req->mainItem,
-                'subItem' => $req->subItem,
-                'plansStartDay' => $req->plansStartDay,
-                'plansFinishDay' => $req->plansFinishDay,
-                'resultStartDay' => $req->resultStartDay,
-                'resultsFinishDay' => $req->resultsFinishDay,
-                'progress' => $req->progress,
-                'productionCost' => $req->productionCost,
-                'rep' => $req->rep
+                'wbsItem' => $req->wbsId,
+                'user' => $req->user,
+                'comment' => $req->comment,
             ];
-            Wbs::where('id', $id)->update($update);
-
+            WbsComment::where('id', $id)->update($update);
             return response()->json(
                 '更新しました。',
                 200
@@ -125,8 +102,8 @@ class WbsController extends Controller
     public function destroy($id)
     {
         try {
-            $wbs = Wbs::where('id', $id)->delete();
-            if ($wbs) {
+            $comment = WbsComment::where('id', $id)->delete();
+            if ($comment) {
                 return response()->json(
                     ['message' => '削除しました。'],
                     200

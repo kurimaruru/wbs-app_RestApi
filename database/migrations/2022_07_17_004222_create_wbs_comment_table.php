@@ -14,11 +14,11 @@ return new class extends Migration
     public function up()
     {
         Schema::create('wbs_comment', function (Blueprint $table) {
-            $table->integer('wbsId');
+            $table->integer('wbsId')->references('id')->on('wbs')->cascadeOnDelete();
             $table->string('user', 30);
             $table->string('comment');
+            $table->boolean('confirmFlag');
             $table->timestamps();
-            $table->primary(['wbsId', 'user']);
         });
     }
 

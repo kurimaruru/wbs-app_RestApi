@@ -19,9 +19,9 @@ return new class extends Migration
             $table->string('subItem');
             $table->date('plansStartDay');
             $table->date('plansFinishDay');
-            $table->date('resultStartDay');
-            $table->date('resultsFinishDay');
-            $table->integer('progress');
+            $table->date('resultStartDay')->nullable();
+            $table->date('resultsFinishDay')->nullable();
+            $table->integer('progress')->nullable();
             $table->integer('productionCost');
             $table->string('rep');
             $table->timestamps();
