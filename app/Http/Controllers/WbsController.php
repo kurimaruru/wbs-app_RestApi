@@ -17,19 +17,19 @@ class WbsController extends Controller
     {
         try {
             $sql = '
-        SELECT 
-            a.id,
-            a.mainItem,
-            a.subItem,
-            DATE_FORMAT(a.plansStartDay ,\'%Y-%m-%d\')as plansStartDay,
-            DATE_FORMAT(a.plansFinishDay ,\'%Y-%m-%d\') as plansFinishDay,
-            DATE_FORMAT(a.resultStartDay ,\'%Y-%m-%d\')as resultStartDay,
-            DATE_FORMAT(a.resultsFinishDay ,\'%Y-%m-%d\') as resultsFinishDay,
-            a.progress,
-            a.productionCost,
-            a.rep
-        FROM wbs a
-    ';
+                SELECT 
+                    a.id,
+                    a.mainItem,
+                    a.subItem,
+                    DATE_FORMAT(a.plansStartDay ,\'%Y-%m-%d\')as plansStartDay,
+                    DATE_FORMAT(a.plansFinishDay ,\'%Y-%m-%d\') as plansFinishDay,
+                    DATE_FORMAT(a.resultStartDay ,\'%Y-%m-%d\')as resultStartDay,
+                    DATE_FORMAT(a.resultsFinishDay ,\'%Y-%m-%d\') as resultsFinishDay,
+                    a.progress,
+                    a.productionCost,
+                    a.rep
+                FROM wbs a
+            ';
             $res = DB::select($sql);
             // ddしてるとReact側にResponceが渡せないので注意
             // dd($resWbs);
@@ -58,7 +58,7 @@ class WbsController extends Controller
                 'plansFinishDay' => $req->plansFinishDay,
                 'resultStartDay' => null,
                 'resultsFinishDay' => null,
-                'progress' => '',
+                'progress' => 0,
                 'productionCost' => $req->productionCost,
                 'rep' => $req->rep
             ];
