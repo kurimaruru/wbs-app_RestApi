@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Wbs;
 use Illuminate\Http\Request;
-use App\Models\SelectSql;
+use Illuminate\Support\Facades\DB;
 
 class WbsController extends Controller
 {
@@ -16,13 +16,25 @@ class WbsController extends Controller
     public function index()
     {
         try {
-            $select = new SelectSql();
-            $resWbs = $select->selectWbsData();
-
+            $sql = '
+        SELECT 
+            a.id,
+            a.mainItem,
+            a.subItem,
+            DATE_FORMAT(a.plansStartDay ,\'%Y-%m-%d\')as plansStartDay,
+            DATE_FORMAT(a.plansFinishDay ,\'%Y-%m-%d\') as plansFinishDay,
+            DATE_FORMAT(a.resultStartDay ,\'%Y-%m-%d\')as resultStartDay,
+            DATE_FORMAT(a.resultsFinishDay ,\'%Y-%m-%d\') as resultsFinishDay,
+            a.progress,
+            a.productionCost,
+            a.rep
+        FROM wbs a
+    ';
+            $res = DB::select($sql);
             // ddしてるとReact側にResponceが渡せないので注意
             // dd($resWbs);
             return response()->json(
-                $resWbs,
+                $res,
                 200
             );
         } catch (\Throwable $th) {
@@ -69,10 +81,24 @@ class WbsController extends Controller
     public function show(Request $request)
     {
         try {
-            $select = new SelectSql();
-            $resDetailWbs = $select->selectDetailWbsData($request->user);
+            $sql = '
+            SELECT 
+                a.id,
+                a.mainItem,
+                a.subItem,
+                DATE_FORMAT(a.plansStartDay ,\'%Y-%m-%d\')as plansStartDay,
+                DATE_FORMAT(a.plansFinishDay ,\'%Y-%m-%d\') as plansFinishDay,
+                DATE_FORMAT(a.resultStartDay ,\'%Y-%m-%d\')as resultStartDay,
+                DATE_FORMAT(a.resultsFinishDay ,\'%Y-%m-%d\') as resultsFinishDay,
+                a.progress,
+                a.productionCost,
+                a.rep
+            FROM wbs a
+            WHERE a.rep = ?
+            ';
+            $res = DB::select($sql, [$request->user]);
             return response()->json(
-                $resDetailWbs,
+                $res,
                 200
             );
         } catch (\Throwable $th) {

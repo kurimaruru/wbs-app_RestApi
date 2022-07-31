@@ -5,8 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Wbs;
 use App\Models\WbsComment;
-use App\Models\SelectSql;
-
+use Illuminate\Support\Facades\DB;
 
 class CommentController extends Controller
 {
@@ -53,10 +52,18 @@ class CommentController extends Controller
     public function show($id)
     {
         try {
-            $select = new SelectSql();
-            $resComment = $select->selectWbsComment($id);
+            $sql = '
+            SELECT 
+              wbsId,
+              user,
+              comment,
+              DATE_FORMAT(created_at ,\'%Y-%m-%d\') as createdTime,
+              confirmFlag
+            FROM wbs_comment
+            ';
+            $res = DB::select($sql);
             return response()->json(
-                $resComment,
+                $res,
                 200
             );
         } catch (\Throwable $th) {
